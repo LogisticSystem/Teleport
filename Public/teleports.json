@@ -3,16 +3,19 @@
     {
       "id": 1,
       "availableStorages": [
-        "A",
-        "B"
+        "G",
+        "H",
+        "M",
+        "N"
       ]
     },
     {
       "id": 2,
       "availableStorages": [
-        "B",
-        "D",
-        "E"
+        "J",
+        "K",
+        "P",
+        "Q"
       ]
     }
   ]
