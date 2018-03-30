@@ -8,4 +8,5 @@ public func routes(_ router: Router) throws {
     
     let teleportsController = TeleportsController()
     try router.register(collection: teleportsController)
+    
 }
