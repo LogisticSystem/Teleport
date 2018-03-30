@@ -1,15 +1,8 @@
-import Foundation
 import Vapor
 
 struct TeleportsController {
     
     private let configsUrl = "http://localhost:8080/teleports.json"
-    
-    init() {
-        #if os(Linux)
-            srandom(UInt32(time(nil)))
-        #endif
-    }
     
 }
 
@@ -17,14 +10,6 @@ struct TeleportsController {
 // MARK: - Приватные методы
 
 private extension TeleportsController {
-    
-    func generateRandom(max: Int) -> Int {
-        #if os(Linux)
-            return Int(random() % max)
-        #else
-            return Int(arc4random_uniform(UInt32(max)))
-        #endif
-    }
     
     func configureHandler(_ request: Request) throws -> Future<[Teleport]> {
         
@@ -57,7 +42,7 @@ private extension TeleportsController {
                 let teleports = teleportsService.getAll()
                 
                 for teleport in teleports {
-                    let index = self.generateRandom(max: teleport.availableStorages.count)
+                    let index = Random.roll(max: teleport.availableStorages.count)
                     let storageId = teleport.availableStorages[index]
                     
                     dispatchGroup.enter()
