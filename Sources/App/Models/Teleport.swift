@@ -1,15 +1,15 @@
 import Vapor
 
-final class Teleport {
+final class Teleport: Codable {
     
     // MARK: - Публичные свойства
     
     /// Идентификатор телепорта
-    let id: Int
+    var id: Int
     /// Достижимые склады
-    let availableStorages: [String]
+    var availableStorages: [String]
     /// Товары
-    var products: [Product] = []
+    var products: [Product]! = []
     
     
     // MARK: - Инициализация
@@ -20,3 +20,8 @@ final class Teleport {
     }
     
 }
+
+
+// MARK: - Content
+
+extension Teleport: Content { }

@@ -27,4 +27,5 @@ final class Product: Codable {
 
 
 // MARK: - Content
+
 extension Product: Content { }

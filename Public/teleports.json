@@ -1,0 +1,19 @@
+{
+  "teleports": [
+    {
+      "id": 1,
+      "availableStorages": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 2,
+      "availableStorages": [
+        "B",
+        "D",
+        "E"
+      ]
+    }
+  ]
+}
