@@ -74,6 +74,15 @@
         }
       },
       {
+        "package": "SQLite",
+        "repositoryURL": "https://github.com/vapor/sqlite.git",
+        "state": {
+          "branch": null,
+          "revision": "f25c4b44c98c7de5e25e6ec32dbb1d9cb7a68d3d",
+          "version": "3.0.0-rc.2.1.1"
+        }
+      },
+      {
         "package": "Service",
         "repositoryURL": "https://github.com/vapor/service.git",
         "state": {
@@ -83,12 +92,30 @@
         }
       },
       {
-        "package": "SQLite",
-        "repositoryURL": "https://github.com/vapor/sqlite.git",
+        "package": "TemplateKit",
+        "repositoryURL": "https://github.com/vapor/template-kit.git",
         "state": {
           "branch": null,
-          "revision": "f25c4b44c98c7de5e25e6ec32dbb1d9cb7a68d3d",
-          "version": "3.0.0-rc.2.1.1"
+          "revision": "61ed3d3b0df4c181d6b88e06b418f425978ac2af",
+          "version": "1.0.0-rc.2.0.3"
+        }
+      },
+      {
+        "package": "Validation",
+        "repositoryURL": "https://github.com/vapor/validation.git",
+        "state": {
+          "branch": null,
+          "revision": "1ce87fc2d18a8f15a491805825063c8db493a51e",
+          "version": "2.0.0-rc.2.1.1"
+        }
+      },
+      {
+        "package": "Vapor",
+        "repositoryURL": "https://github.com/vapor/vapor.git",
+        "state": {
+          "branch": null,
+          "revision": "5e59691ef575597aa640da76ccb9fc5ee638f2c1",
+          "version": "3.0.0-rc.2.2.1"
         }
       },
       {
@@ -125,33 +152,6 @@
           "branch": null,
           "revision": "37760e9a52030bb9011972c5213c3350fa9d41fd",
           "version": "1.0.0"
-        }
-      },
-      {
-        "package": "TemplateKit",
-        "repositoryURL": "https://github.com/vapor/template-kit.git",
-        "state": {
-          "branch": null,
-          "revision": "61ed3d3b0df4c181d6b88e06b418f425978ac2af",
-          "version": "1.0.0-rc.2.0.3"
-        }
-      },
-      {
-        "package": "Validation",
-        "repositoryURL": "https://github.com/vapor/validation.git",
-        "state": {
-          "branch": null,
-          "revision": "1ce87fc2d18a8f15a491805825063c8db493a51e",
-          "version": "2.0.0-rc.2.1.1"
-        }
-      },
-      {
-        "package": "Vapor",
-        "repositoryURL": "https://github.com/vapor/vapor.git",
-        "state": {
-          "branch": null,
-          "revision": "5e59691ef575597aa640da76ccb9fc5ee638f2c1",
-          "version": "3.0.0-rc.2.2.1"
         }
       }
     ]
