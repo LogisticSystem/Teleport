@@ -62,7 +62,36 @@ private extension TeleportsController {
                     
                     dispatchGroup.enter()
                     _ = try? self.checkStorage(request, storageId: storageId, teleport: teleport).map(to: Void.self) { _ in
-                        dispatchGroup.leave()
+                        
+                        // Составляем словарь, в котором ключ - склад, а значение - массив товаров, которые необходимо доставить до этого склада
+                        var tmp: [String: [Product]] = [:]
+                        for product in teleport.products {
+                            
+                            // Из маршрута получаем идентификатор следующей точки назначения
+                            guard let nextPoint = product.route.first, let _nextPointId = nextPoint.split(separator: "|").first else { continue }
+                            let nextPointId = String(_nextPointId)
+                            
+                            // Записываем товар в словарь
+                            if tmp[nextPointId] == nil {
+                                tmp[nextPointId] = []
+                            }
+                            
+                            tmp[nextPointId]?.append(product)
+                        }
+                        
+                        // Получить ключ, для которого в словаре наибольшее количество элементов
+                        guard let result = tmp.max(by: { $0.value.count < $1.value.count }) else {
+                            dispatchGroup.leave()
+                            return
+                        }
+                        
+                        // Удаляем данные
+                        teleportsService.remove(result.value, inTeleport: teleport.id)
+                        
+                        // Отправляем запрос на отгрузку
+                        _ = try? self.deliverProducts(request, products: result.value, destinationStorage: result.key, in: teleport).map(to: Void.self) { response in
+                            dispatchGroup.leave()
+                        }
                     }
                 }
                 
@@ -95,6 +124,22 @@ private extension TeleportsController {
                         
                         return
                     }
+                }
+            }
+        }
+    }
+    
+    func deliverProducts(_ request: Request, products: [Product], destinationStorage: String, in teleport: Teleport) throws -> Future<Void> {
+        
+        // Отправка запроса на сброс владельца
+        let content = ProductsUpdateOwnerContainer(products: products)
+        return try request.make(Client.self).put("http://188.225.9.3/products/owner/", content: content).flatMap(to: Void.self) { response in
+            return try response.content.decode(ProductsUpdateOwnerContainer.self).flatMap(to: Void.self) { productsContainer in
+                
+                // Отправка запроса на передачу складу
+                let content = DeliverToStorageRequest(products: productsContainer.products, transportId: "teleport-\(teleport.id)")
+                return try request.make(Client.self).post("http://188.225.9.3/storages/\(destinationStorage)/products", content: content).map(to: Void.self) { response in
+                    return
                 }
             }
         }
