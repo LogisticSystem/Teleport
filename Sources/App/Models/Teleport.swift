@@ -9,7 +9,7 @@ final class Teleport: Codable {
     /// Достижимые склады
     var availableStorages: [String]
     /// Товары
-    var products: [Product]! = []
+    var products: [Product]!
     
     
     // MARK: - Инициализация
@@ -17,6 +17,7 @@ final class Teleport: Codable {
     init(id: Int, availableStorages: [String]) {
         self.id = id
         self.availableStorages = availableStorages
+        self.products = []
     }
     
 }

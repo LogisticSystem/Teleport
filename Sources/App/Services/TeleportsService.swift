@@ -27,7 +27,11 @@ extension TeleportsService {
             guard let teleportIndex = teleports.index(where: { $0.id == teleportId }) else { return }
             let teleport = teleports[teleportIndex]
             
-            teleport.products.append(contentsOf: products)
+            if teleport.products == nil {
+                teleport.products = products
+            } else {
+                teleport.products.append(contentsOf: products)
+            }
         }
     }
     
