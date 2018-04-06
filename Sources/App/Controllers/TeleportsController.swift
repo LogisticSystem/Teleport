@@ -93,14 +93,32 @@ private extension TeleportsController {
     
     func checkStorage(_ request: Request, storageId: String, teleport: Teleport) throws -> Future<Void> {
         
+        // Идентификатор транспорта
+        let transportId = "teleport-\(teleport.id)"
+        
+        // Логирование
+        let loggerService = try request.make(LoggerService.self)
+        
+        let message = Message(action: "getItems", transportId: transportId, storageId: storageId, capacity: .max, products: nil, percent: nil)
+        try loggerService.log(message)
+        
         // Отправка запроса на получение товаров для транспортировки со склада
-        let content = CheckProductsRequest(capacity: nil, accessiblePoints: teleport.availableStorages.filter { $0 != storageId })
+        let content = CheckProductsRequest(capacity: nil, accessiblePoints: teleport.availableStorages.filter { $0 != storageId }, transportId: transportId)
         return try request.make(Client.self).post("http://188.225.9.3/storages/\(storageId)/products/prepare", content: content).flatMap(to: Void.self) { response in
             return try response.content.decode(CheckProductsResponse.self).flatMap(to: Void.self) { productsResponse in
                 
+                if !productsResponse.products.isEmpty {
+                    
+                    // Логирование
+                    let loggerService = try request.make(LoggerService.self)
+                
+                    let message = Message(action: "gotItems", transportId: transportId, storageId: storageId, capacity: .max, products: productsResponse.products, percent: 0)
+                    try loggerService.log(message)
+                }
+                
                 // Отправка запроса на смену владельца товара
                 let content = ProductsUpdateOwnerContainer(products: productsResponse.products)
-                return try request.make(Client.self).put("http://188.225.9.3/products/owner/teleport-\(teleport.id)", content: content).flatMap(to: Void.self) { response in
+                return try request.make(Client.self).put("http://188.225.9.3/products/owner/\(transportId)", content: content).flatMap(to: Void.self) { response in
                     return try response.content.decode(ProductsUpdateOwnerContainer.self).map(to: Void.self) { productsContainer in
                         
                         // Сохранить в массив у телепорта
@@ -116,13 +134,28 @@ private extension TeleportsController {
     
     func deliverProducts(_ request: Request, products: [Product], destinationStorage: String, in teleport: Teleport) throws -> Future<Void> {
         
+        // Идентификатор транспорта
+        let transportId = "teleport-\(teleport.id)"
+        
+        // Логирование
+        let loggerService = try request.make(LoggerService.self)
+        
+        let message = Message(action: "giveItems", transportId: transportId, storageId: destinationStorage, capacity: .max, products: products, percent: nil)
+        try loggerService.log(message)
+        
         // Отправка запроса на сброс владельца
         let content = ProductsUpdateOwnerContainer(products: products)
         return try request.make(Client.self).put("http://188.225.9.3/products/owner/", content: content).flatMap(to: Void.self) { response in
             return try response.content.decode(ProductsUpdateOwnerContainer.self).flatMap(to: Void.self) { productsContainer in
                 
+                // Логирование
+                let loggerService = try request.make(LoggerService.self)
+                
+                let message = Message(action: "gaveItems", transportId: transportId, storageId: destinationStorage, capacity: .max, products: productsContainer.products, percent: 100)
+                try loggerService.log(message)
+                
                 // Отправка запроса на передачу складу
-                let content = DeliverToStorageRequest(products: productsContainer.products, transportId: "teleport-\(teleport.id)")
+                let content = DeliverToStorageRequest(products: productsContainer.products, transportId: transportId)
                 return try request.make(Client.self).post("http://188.225.9.3/storages/\(destinationStorage)/products", content: content).map(to: Void.self) { response in
                     return
                 }

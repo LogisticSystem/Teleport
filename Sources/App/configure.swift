@@ -9,6 +9,11 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     let router = EngineRouter.default()
     try routes(router)
     services.register(router, as: Router.self)
+    
+    // Register routes to the WebSocket router
+    let webSocketRouter = EngineWebSocketServer.default()
+    webSocketRoutes(webSocketRouter)
+    services.register(webSocketRouter, as: WebSocketServer.self)
 
     /// Register middleware
     var middlewares = MiddlewareConfig() // Create _empty_ middleware config
@@ -19,4 +24,6 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     
     // Registration services
     services.register(TeleportsService())
+    services.register(LoggerService())
+    
 }
